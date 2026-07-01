@@ -10,18 +10,30 @@ namespace SpaceShooterGame
 {
     public partial class GameForm : Form
     {
+
+        List<GameObject> enemies = new List<GameObject>();
         Player player = new Player(200, 400);
         public GameForm()
         {
             InitializeComponent();
             this.DoubleBuffered = true;//پرش صفحه نداریم دیگه با این خط
             this.KeyPreview = true;
+
+            // اضافه کردن چند دشمن برای تست
+            enemies.Add(new Enemy(50, 50));
+            enemies.Add(new Enemy(150, 50));
         }
         // این متد برای نقاشی روی فرم است
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             player.Draw(e.Graphics);
+
+            // رسم تمام دشمن‌های داخل لیست
+            foreach (var enemy in enemies)
+            {
+                enemy.Draw(e.Graphics);
+            }
         }
 
         // این متد برای حرکت با کیبورد است
