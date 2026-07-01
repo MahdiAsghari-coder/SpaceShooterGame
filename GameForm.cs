@@ -15,6 +15,11 @@ namespace SpaceShooterGame
         List<GameObject> bullets = new List<GameObject>();
         private int score = 0;
         Random rnd = new Random();
+        private bool isMovingLeft = false;
+        private bool isMovingRight = false;
+        private bool isShooting = false;
+        private int shootCooldown = 0; // تایمر برای فاصله بین شلیک‌ها
+        private const int FIRE_RATE_DELAY = 10;
 
         Player player = new Player(200, 400);
         public GameForm()
@@ -51,19 +56,33 @@ namespace SpaceShooterGame
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            if (e.KeyCode == Keys.Left) player.MoveLeft();
-            if (e.KeyCode == Keys.Right) player.MoveRight(this.ClientSize.Width);
-
-            if (e.KeyCode == Keys.Space) // با دکمه اسپیس شلیک کن
-            {
-                bullets.Add(new Bullet(player.X + 20, player.Y));
-            }
-
-            this.Invalidate(); // درخواست برای رسم مجدد
+            if (e.KeyCode == Keys.Left) isMovingLeft = true;
+            if (e.KeyCode == Keys.Right) isMovingRight = true;
+            if (e.KeyCode == Keys.Space) isShooting = true; // دستت روی اسپیس هست
         }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            if (e.KeyCode == Keys.Left) isMovingLeft = false;
+            if (e.KeyCode == Keys.Right) isMovingRight = false;
+            if (e.KeyCode == Keys.Space) isShooting = false; // دستت رو از اسپیس برداشتی
+        }
+
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (isMovingLeft) player.MoveLeft();
+            if (isMovingRight) player.MoveRight(this.ClientSize.Width);
+
+            if (shootCooldown > 0) shootCooldown--;
+
+            if (isShooting && shootCooldown == 0)
+            {
+                bullets.Add(new Bullet(player.X + 20, player.Y));
+                shootCooldown = FIRE_RATE_DELAY; // قفل کردن شلیک برای فریم‌های بعدی
+            }
+
             int enemySpeed = 3; // سرعت اولیه
 
             // منطق افزایش سرعت بر اساس امتیاز
@@ -92,6 +111,7 @@ namespace SpaceShooterGame
 
             // چک کردن برخورد
             CheckCollisions();
+
 
             // تولید دشمن جدید هر ۵۰ تیک یک‌بار
             if (rnd.Next(0, 50) == 1)
