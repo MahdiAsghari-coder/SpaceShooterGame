@@ -1,0 +1,28 @@
+﻿using System.Drawing;
+
+namespace SpaceShooterGame
+{
+    // این کلمه : GameObject یعنی کلاس Player ارث‌بری می‌کند از GameObject
+    public class Player : GameObject
+    {
+        public int Speed { get; set; } = 10;
+
+        public Player(int x, int y)
+        {
+            X = x;
+            Y = y;
+            Width = 50;
+            Height = 50;
+        }
+
+        public override void Draw(Graphics g)
+        {
+            // اینجا داریم عکس سفینه رو از Resources می‌کشیم
+            // اگر خطای قرمز داد، بعداً با هم درستش می‌کنیم
+            g.DrawImage(Properties.Resources.player_ship, X, Y, Width, Height);
+        }
+
+        public void MoveLeft() { if (X > 0) X -= Speed; }
+        public void MoveRight(int formWidth) { if (X < formWidth - Width) X += Speed; }
+    }
+}
