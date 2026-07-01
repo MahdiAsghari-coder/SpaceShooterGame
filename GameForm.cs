@@ -70,7 +70,39 @@ namespace SpaceShooterGame
                 ((Bullet)bullet).MoveUp();
             }
 
+            // حذف گلوله‌هایی که از صفحه خارج شدند
+            bullets.RemoveAll(b => b.Y < 0);
+
+            // چک کردن برخورد
+            CheckCollisions();
+
             this.Invalidate();//اینجوری فرم دوباره رسم میشه
+        }
+
+        private void CheckCollisions()
+        {
+            var bulletsToRemove = new List<GameObject>();
+            var enemiesToRemove = new List<GameObject>();
+
+            foreach (var b in bullets)
+            {
+                foreach (var e in enemies)
+                {
+                    // ساخت مستطیل برای گلوله و دشمن جهت چک کردن برخورد
+                    Rectangle bulletRect = new Rectangle(b.X, b.Y, b.Width, b.Height);
+                    Rectangle enemyRect = new Rectangle(e.X, e.Y, e.Width, e.Height);
+
+                    // اگر با هم برخورد داشتند
+                    if (bulletRect.IntersectsWith(enemyRect))
+                    {
+                        bulletsToRemove.Add(b);
+                        enemiesToRemove.Add(e);
+                    }
+                }
+            }
+
+            foreach (var b in bulletsToRemove) bullets.Remove(b);
+            foreach (var e in enemiesToRemove) enemies.Remove(e);
         }
 
         private void GameForm_Load(object sender, EventArgs e)
