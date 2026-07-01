@@ -13,6 +13,8 @@ namespace SpaceShooterGame
 
         List<GameObject> enemies = new List<GameObject>();
         List<GameObject> bullets = new List<GameObject>();
+        private int score = 0;
+        Random rnd = new Random();
 
         Player player = new Player(200, 400);
         public GameForm()
@@ -40,6 +42,9 @@ namespace SpaceShooterGame
             {
                 b.Draw(e.Graphics);
             }
+            // نمایش امتیاز در گوشه صفحه
+            e.Graphics.DrawString("Score: " + score, new Font("Arial", 16), Brushes.Black, new Point(10, 10));
+
         }
 
         // این متد برای حرکت با کیبورد است
@@ -59,6 +64,18 @@ namespace SpaceShooterGame
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            int enemySpeed = 3; // سرعت اولیه
+
+            // منطق افزایش سرعت بر اساس امتیاز
+            if (score >= 100 && score < 200) enemySpeed = 5;
+            else if (score >= 200) enemySpeed = 7;
+
+            // استفاده از سرعت متغیر در حرکت دشمن‌ها
+            foreach (var enemy in enemies)
+            {
+                ((Enemy)enemy).Y += enemySpeed;
+            }
+
             // حرکت دادن همه دشمن‌ها
             foreach (var enemy in enemies)
             {
@@ -75,6 +92,13 @@ namespace SpaceShooterGame
 
             // چک کردن برخورد
             CheckCollisions();
+
+            // تولید دشمن جدید هر ۵۰ تیک یک‌بار
+            if (rnd.Next(0, 50) == 1)
+            {
+                enemies.Add(new Enemy(rnd.Next(0, this.ClientSize.Width - 40), -50));
+            }
+
 
             this.Invalidate();//اینجوری فرم دوباره رسم میشه
         }
@@ -95,6 +119,7 @@ namespace SpaceShooterGame
                     // اگر با هم برخورد داشتند
                     if (bulletRect.IntersectsWith(enemyRect))
                     {
+                        score += 1;
                         bulletsToRemove.Add(b);
                         enemiesToRemove.Add(e);
                     }
