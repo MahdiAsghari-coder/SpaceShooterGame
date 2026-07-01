@@ -22,6 +22,12 @@ namespace SpaceShooterGame
         private int shootCooldown = 0; // تایمر برای فاصله بین شلیک‌ها
         private const int FIRE_RATE_DELAY = 10;
 
+        private int currentWave = 1;
+        private int enemiesDefeatedInWave = 0;
+        private int enemiesNeededForWave = 10;
+        private bool isBossSpawned = false;
+
+
         Player player = new Player(200, 400);
         public GameForm()
         {
@@ -53,6 +59,8 @@ namespace SpaceShooterGame
             }
             // نمایش امتیاز در گوشه صفحه
             e.Graphics.DrawString("Score: " + score, new Font("Arial", 16), Brushes.Black, new Point(10, 10));
+            // نمایش شماره موج
+            e.Graphics.DrawString("Wave: " + currentWave + " / 10", new Font("Arial", 16), Brushes.Red, new Point(10, 40));
 
         }
 
@@ -123,14 +131,42 @@ namespace SpaceShooterGame
             CheckCollisions();
 
 
-            if (rnd.Next(0, 50) == 1)
+
+
+            if (enemiesDefeatedInWave >= enemiesNeededForWave && !isBossSpawned)
             {
-                int randomX = rnd.Next(50, this.ClientSize.Width - 50);
-                enemies.Add(new HeavyTankEnemy(100, -80));
-                if (rnd.Next(0, 2) == 0)
-                    enemies.Add(new StandardEnemy(randomX, -50));
+                if (currentWave == 10)
+                {
+                    isBossSpawned = true;
+                    enemies.Add(new HeavyTankEnemy(this.ClientSize.Width / 2 - 40, -80));
+                }
                 else
-                    enemies.Add(new ScoutEnemy(randomX, -50));
+                {
+                    timer1.Stop();
+                    MessageBox.Show("Wave " + currentWave + " Cleared! Get ready for next wave.", "Wave Complete");
+
+                    currentWave++;
+                    enemiesDefeatedInWave = 0;
+
+                    timer1.Start();
+                }
+            }
+
+            if (currentWave < 10 && rnd.Next(0, 50) == 1)
+            {
+                int randomX = rnd.Next(0, this.ClientSize.Width - 40);
+                Enemy newEnemy;
+
+                if (currentWave >= 3 && rnd.Next(0, 3) == 0)
+                    newEnemy = new ShooterEnemy(randomX, -50);
+                else if (currentWave >= 2 && rnd.Next(0, 2) == 0)
+                    newEnemy = new ScoutEnemy(randomX, -50);
+                else
+                    newEnemy = new StandardEnemy(randomX, -50);
+
+                newEnemy.HP = newEnemy.HP + (2 * currentWave);
+
+                enemies.Add(newEnemy);
             }
 
 
@@ -153,9 +189,23 @@ namespace SpaceShooterGame
                     // اگر با هم برخورد داشتند
                     if (bulletRect.IntersectsWith(enemyRect))
                     {
-                        score += 1;
+                        Enemy hitEnemy = (Enemy)e;
+                        hitEnemy.HP -= 2;
                         bulletsToRemove.Add(b);
-                        enemiesToRemove.Add(e);
+
+                        if (hitEnemy.HP <= 0)
+                        {
+                            score += 10;
+                            enemiesDefeatedInWave++;
+                            enemiesToRemove.Add(e);
+
+                            if (hitEnemy is HeavyTankEnemy)
+                            {
+                                timer1.Stop();
+                                MessageBox.Show("تبریک! شما غول را کشتید و بازی تمام شد!", "پایان بازی");
+                                this.Close();
+                            }
+                        }
                     }
                 }
             }
