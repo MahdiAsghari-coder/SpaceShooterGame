@@ -16,4 +16,8 @@ public class Enemy : GameObject
     {
         g.DrawImage(global::SpaceShooterGame.Properties.Resources.enemy_standard, X, Y, Width, Height);
     }
+    public void MoveDown()
+    {
+        Y += 3; // سرعت حرکت دشمن به پایین
+    }
 }

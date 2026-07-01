@@ -48,6 +48,13 @@ namespace SpaceShooterGame
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            // حرکت دادن همه دشمن‌ها
+            foreach (var enemy in enemies)
+            {
+                ((Enemy)enemy).MoveDown();
+            }
+
+
             this.Invalidate();//اینجوری فرم دوباره رسم میشه
         }
 
