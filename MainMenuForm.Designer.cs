@@ -39,6 +39,7 @@
             btnplay.TabIndex = 1;
             btnplay.Text = "شروع بازی ";
             btnplay.UseVisualStyleBackColor = true;
+            btnplay.Click += btnPlay_Click;
             // 
             // MainMenuForm
             // 
@@ -48,7 +49,6 @@
             Controls.Add(btnplay);
             Name = "MainMenuForm";
             Text = "Space Shooter - Main Menu";
-            Load += MainMenuForm_Load;
             ResumeLayout(false);
         }
 

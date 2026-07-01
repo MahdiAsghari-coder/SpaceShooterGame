@@ -2,7 +2,6 @@
 
 namespace SpaceShooterGame
 {
-    // این کلمه : GameObject یعنی کلاس Player ارث‌بری می‌کند از GameObject
     public class Player : GameObject
     {
         public int Speed { get; set; } = 10;
@@ -17,8 +16,6 @@ namespace SpaceShooterGame
 
         public override void Draw(Graphics g)
         {
-            // اینجا داریم عکس سفینه رو از Resources می‌کشیم
-            // اگر خطای قرمز داد، بعداً با هم درستش می‌کنیم
             g.DrawImage(Properties.Resources.player_ship, X, Y, Width, Height);
         }
 

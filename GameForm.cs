@@ -15,6 +15,7 @@ namespace SpaceShooterGame
         {
             InitializeComponent();
             this.DoubleBuffered = true;//پرش صفحه نداریم دیگه با این خط
+            this.KeyPreview = true;
         }
         // این متد برای نقاشی روی فرم است
         protected override void OnPaint(PaintEventArgs e)
