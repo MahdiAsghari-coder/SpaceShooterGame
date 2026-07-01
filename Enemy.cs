@@ -1,23 +1,19 @@
-﻿using SpaceShooterGame;
-using System.Drawing;
-using SpaceShooterGame.Properties;
+﻿using System.Drawing;
 
-public class Enemy : GameObject
+namespace SpaceShooterGame
 {
-    public Enemy(int x, int y)
+    public abstract class Enemy : GameObject
     {
-        X = x;
-        Y = y;
-        Width = 40;
-        Height = 40;
-    }
+        public int HP { get; set; }
 
-    public override void Draw(Graphics g)
-    {
-        g.DrawImage(global::SpaceShooterGame.Properties.Resources.enemy_standard, X, Y, Width, Height);
-    }
-    public void MoveDown()
-    {
-        Y += 3; // سرعت حرکت دشمن به پایین
+        public Enemy(int x, int y, int width, int height)
+        {
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+        }
+
+        public abstract void Move();
     }
 }

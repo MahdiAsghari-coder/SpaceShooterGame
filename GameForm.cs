@@ -29,8 +29,8 @@ namespace SpaceShooterGame
             this.KeyPreview = true;
 
             // اضافه کردن چند دشمن برای تست
-            enemies.Add(new Enemy(50, 50));
-            enemies.Add(new Enemy(150, 50));
+            enemies.Add(new StandardEnemy(50, 50));
+            enemies.Add(new StandardEnemy(150, 50));
         }
         // این متد برای نقاشی روی فرم است
         protected override void OnPaint(PaintEventArgs e)
@@ -98,7 +98,7 @@ namespace SpaceShooterGame
             // حرکت دادن همه دشمن‌ها
             foreach (var enemy in enemies)
             {
-                ((Enemy)enemy).MoveDown();
+                ((Enemy)enemy).Move();
             }
 
             foreach (var bullet in bullets)
@@ -113,10 +113,14 @@ namespace SpaceShooterGame
             CheckCollisions();
 
 
-            // تولید دشمن جدید هر ۵۰ تیک یک‌بار
             if (rnd.Next(0, 50) == 1)
             {
-                enemies.Add(new Enemy(rnd.Next(0, this.ClientSize.Width - 40), -50));
+                int randomX = rnd.Next(50, this.ClientSize.Width - 50);
+
+                if (rnd.Next(0, 2) == 0)
+                    enemies.Add(new StandardEnemy(randomX, -50));
+                else
+                    enemies.Add(new ScoutEnemy(randomX, -50));
             }
 
 
