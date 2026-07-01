@@ -12,6 +12,8 @@ namespace SpaceShooterGame
     {
 
         List<GameObject> enemies = new List<GameObject>();
+        List<GameObject> bullets = new List<GameObject>();
+
         Player player = new Player(200, 400);
         public GameForm()
         {
@@ -34,6 +36,10 @@ namespace SpaceShooterGame
             {
                 enemy.Draw(e.Graphics);
             }
+            foreach (var b in bullets)
+            {
+                b.Draw(e.Graphics);
+            }
         }
 
         // این متد برای حرکت با کیبورد است
@@ -42,6 +48,11 @@ namespace SpaceShooterGame
             base.OnKeyDown(e);
             if (e.KeyCode == Keys.Left) player.MoveLeft();
             if (e.KeyCode == Keys.Right) player.MoveRight(this.ClientSize.Width);
+
+            if (e.KeyCode == Keys.Space) // با دکمه اسپیس شلیک کن
+            {
+                bullets.Add(new Bullet(player.X + 20, player.Y));
+            }
 
             this.Invalidate(); // درخواست برای رسم مجدد
         }
@@ -54,6 +65,10 @@ namespace SpaceShooterGame
                 ((Enemy)enemy).MoveDown();
             }
 
+            foreach (var bullet in bullets)
+            {
+                ((Bullet)bullet).MoveUp();
+            }
 
             this.Invalidate();//اینجوری فرم دوباره رسم میشه
         }
