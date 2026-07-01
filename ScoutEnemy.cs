@@ -14,7 +14,7 @@ namespace SpaceShooterGame
             startX = x;
         }
 
-        public override void Move()
+        public override void Move(int playerX, int playerY)
         {
             Y += 5;
             angle += 0.15;

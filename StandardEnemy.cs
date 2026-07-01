@@ -9,7 +9,7 @@ namespace SpaceShooterGame
             HP = 1;
         }
 
-        public override void Move()
+        public override void Move(int playerX, int playerY)
         {
             Y += 3;
         }

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Collections.Generic;
 
 namespace SpaceShooterGame
 {
@@ -14,6 +15,8 @@ namespace SpaceShooterGame
             Height = height;
         }
 
-        public abstract void Move();
+        public abstract void Move(int playerX, int playerY);
+
+        public virtual void Shoot(List<GameObject> enemyBullets) { }
     }
 }

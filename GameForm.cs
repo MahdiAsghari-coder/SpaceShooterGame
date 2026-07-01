@@ -13,6 +13,7 @@ namespace SpaceShooterGame
 
         List<GameObject> enemies = new List<GameObject>();
         List<GameObject> bullets = new List<GameObject>();
+        List<GameObject> enemyBullets = new List<GameObject>();
         private int score = 0;
         Random rnd = new Random();
         private bool isMovingLeft = false;
@@ -38,7 +39,6 @@ namespace SpaceShooterGame
             base.OnPaint(e);
             player.Draw(e.Graphics);
 
-            // رسم تمام دشمن‌های داخل لیست
             foreach (var enemy in enemies)
             {
                 enemy.Draw(e.Graphics);
@@ -46,6 +46,10 @@ namespace SpaceShooterGame
             foreach (var b in bullets)
             {
                 b.Draw(e.Graphics);
+            }
+            foreach (var eb in enemyBullets)
+            {
+                eb.Draw(e.Graphics);
             }
             // نمایش امتیاز در گوشه صفحه
             e.Graphics.DrawString("Score: " + score, new Font("Arial", 16), Brushes.Black, new Point(10, 10));
@@ -95,11 +99,17 @@ namespace SpaceShooterGame
                 ((Enemy)enemy).Y += enemySpeed;
             }
 
-            // حرکت دادن همه دشمن‌ها
             foreach (var enemy in enemies)
             {
-                ((Enemy)enemy).Move();
+                ((Enemy)enemy).Move(player.X, player.Y);
+                ((Enemy)enemy).Shoot(enemyBullets);
             }
+
+            foreach (var eb in enemyBullets)
+            {
+                ((EnemyBullet)eb).Move();
+            }
+
 
             foreach (var bullet in bullets)
             {
@@ -116,7 +126,7 @@ namespace SpaceShooterGame
             if (rnd.Next(0, 50) == 1)
             {
                 int randomX = rnd.Next(50, this.ClientSize.Width - 50);
-
+                enemies.Add(new HeavyTankEnemy(100, -80));
                 if (rnd.Next(0, 2) == 0)
                     enemies.Add(new StandardEnemy(randomX, -50));
                 else
