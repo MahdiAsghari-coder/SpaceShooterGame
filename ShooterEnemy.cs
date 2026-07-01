@@ -10,11 +10,13 @@ namespace SpaceShooterGame
         public ShooterEnemy(int x, int y) : base(x, y, 40, 40)
         {
             HP = 3;
+            Speed = 2;
+            EnemyScore = 30;
         }
 
         public override void Move(int playerX, int playerY)
         {
-            Y += 2;
+            Y += Speed;
         }
 
         public override void Shoot(List<GameObject> enemyBullets)

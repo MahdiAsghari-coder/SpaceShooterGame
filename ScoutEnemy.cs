@@ -11,12 +11,14 @@ namespace SpaceShooterGame
         public ScoutEnemy(int x, int y) : base(x, y, 40, 40)
         {
             HP = 1;
+            Speed = 5;
+            EnemyScore = 20;
             startX = x;
         }
 
         public override void Move(int playerX, int playerY)
         {
-            Y += 5;
+            Y += Speed;
             angle += 0.15;
             X = startX + (int)(Math.Sin(angle) * 60);
         }

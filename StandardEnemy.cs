@@ -7,11 +7,13 @@ namespace SpaceShooterGame
         public StandardEnemy(int x, int y) : base(x, y, 40, 40)
         {
             HP = 1;
+            Speed = 3;
+            EnemyScore = 10;
         }
 
         public override void Move(int playerX, int playerY)
         {
-            Y += 3;
+            Y += Speed;
         }
 
         public override void Draw(Graphics g)

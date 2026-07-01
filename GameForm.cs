@@ -26,6 +26,8 @@ namespace SpaceShooterGame
         private int enemiesDefeatedInWave = 0;
         private int enemiesNeededForWave = 10;
         private bool isBossSpawned = false;
+        private bool isWaveTransition = false;
+        private int transitionTimer = 0;
 
 
         Player player = new Player(200, 400);
@@ -62,6 +64,16 @@ namespace SpaceShooterGame
             // نمایش شماره موج
             e.Graphics.DrawString("Wave: " + currentWave + " / 10", new Font("Arial", 16), Brushes.Red, new Point(10, 40));
 
+            if (isWaveTransition)
+            {
+                string msg = "Wave " + currentWave + " Completed!\nGet Ready...";
+                Font bigFont = new Font("Arial", 24, FontStyle.Bold);
+                SizeF textSize = e.Graphics.MeasureString(msg, bigFont);
+
+                e.Graphics.DrawString(msg, bigFont, Brushes.Yellow,
+                    (this.ClientSize.Width - textSize.Width) / 2,
+                    (this.ClientSize.Height - textSize.Height) / 2);
+            }
         }
 
         // این متد برای حرکت با کیبورد است
@@ -84,6 +96,21 @@ namespace SpaceShooterGame
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (isWaveTransition)
+            {
+                transitionTimer++;
+                if (transitionTimer > 100)
+                {
+                    isWaveTransition = false;
+                    transitionTimer = 0;
+                    currentWave++;
+                    enemiesDefeatedInWave = 0;
+                    bullets.Clear();
+                }
+                this.Invalidate();
+                return;
+            }
+
             if (isMovingLeft) player.MoveLeft();
             if (isMovingRight) player.MoveRight(this.ClientSize.Width);
 
@@ -142,13 +169,7 @@ namespace SpaceShooterGame
                 }
                 else
                 {
-                    timer1.Stop();
-                    MessageBox.Show("Wave " + currentWave + " Cleared! Get ready for next wave.", "Wave Complete");
-
-                    currentWave++;
-                    enemiesDefeatedInWave = 0;
-
-                    timer1.Start();
+                    isWaveTransition = true;
                 }
             }
 
@@ -157,14 +178,12 @@ namespace SpaceShooterGame
                 int randomX = rnd.Next(0, this.ClientSize.Width - 40);
                 Enemy newEnemy;
 
-                if (currentWave >= 3 && rnd.Next(0, 3) == 0)
-                    newEnemy = new ShooterEnemy(randomX, -50);
-                else if (currentWave >= 2 && rnd.Next(0, 2) == 0)
-                    newEnemy = new ScoutEnemy(randomX, -50);
-                else
-                    newEnemy = new StandardEnemy(randomX, -50);
+                if (currentWave >= 3 && rnd.Next(0, 3) == 0) newEnemy = new ShooterEnemy(randomX, -50);
+                else if (currentWave >= 2 && rnd.Next(0, 2) == 0) newEnemy = new ScoutEnemy(randomX, -50);
+                else newEnemy = new StandardEnemy(randomX, -50);
 
                 newEnemy.HP = newEnemy.HP + (2 * currentWave);
+                newEnemy.Speed = (int)(newEnemy.Speed * (1 + 0.1 * currentWave));
 
                 enemies.Add(newEnemy);
             }
@@ -190,12 +209,12 @@ namespace SpaceShooterGame
                     if (bulletRect.IntersectsWith(enemyRect))
                     {
                         Enemy hitEnemy = (Enemy)e;
-                        hitEnemy.HP -= 2;
+                        hitEnemy.HP -= 1;
                         bulletsToRemove.Add(b);
 
                         if (hitEnemy.HP <= 0)
                         {
-                            score += 10;
+                            score += hitEnemy.EnemyScore;
                             enemiesDefeatedInWave++;
                             enemiesToRemove.Add(e);
 
