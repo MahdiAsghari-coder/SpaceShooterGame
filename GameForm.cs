@@ -33,6 +33,8 @@ namespace SpaceShooterGame
         private int invincibilityTimer = 0;
         private const int InvincibilityDuration = 50;
 
+        List<GameObject> powerUps = new List<GameObject>();
+        private int powerUpCounter = 0;//که مثلا هر 4 تا دشمن که مرد پاور بندازه
 
         Player player = new Player(200, 400);
         public GameForm()
@@ -122,6 +124,19 @@ namespace SpaceShooterGame
                 e.Graphics.DrawString(restartText, fontSub, Brushes.Yellow, centerX - (sizeRestart.Width / 2), centerY + 50);
             }
 
+            foreach (var pw in powerUps)
+            {
+                pw.Draw(e.Graphics);
+            }
+
+            if (player.ShieldTimer > 0)
+            {
+                using (Pen shieldPen = new Pen(Color.Cyan, 2))
+                {
+                    e.Graphics.DrawEllipse(shieldPen, player.X - 8, player.Y - 8, player.Width + 16, player.Height + 16);
+                }
+            }
+
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -148,6 +163,14 @@ namespace SpaceShooterGame
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (isGameOver) return;
+
+            if (player.ShieldTimer > 0) player.ShieldTimer--;
+            if (player.TripleShotTimer > 0) player.TripleShotTimer--;
+
+            foreach (var pw in powerUps)
+            {
+                ((PowerUp)pw).Move();
+            }
             if (isWaveTransition)
             {
                 transitionTimer++;
@@ -170,21 +193,20 @@ namespace SpaceShooterGame
 
             if (isShooting && shootCooldown == 0)
             {
-                bullets.Add(new Bullet(player.X + 20, player.Y));
-                shootCooldown = FIRE_RATE_DELAY; // قفل کردن شلیک برای فریم‌های بعدی
+                if (player.TripleShotTimer > 0)
+                {
+                    bullets.Add(new Bullet(player.X - 10, player.Y));
+                    bullets.Add(new Bullet(player.X + 20, player.Y));
+                    bullets.Add(new Bullet(player.X + 50, player.Y));
+                }
+                else
+                {
+                    bullets.Add(new Bullet(player.X + 20, player.Y));
+                }
+                shootCooldown = FIRE_RATE_DELAY;
             }
 
-            int enemySpeed = 3; // سرعت اولیه
 
-            // منطق افزایش سرعت بر اساس امتیاز
-            if (score >= 100 && score < 200) enemySpeed = 5;
-            else if (score >= 200) enemySpeed = 7;
-
-            // استفاده از سرعت متغیر در حرکت دشمن‌ها
-            foreach (var enemy in enemies)
-            {
-                ((Enemy)enemy).Y += enemySpeed;
-            }
 
             foreach (var enemy in enemies)
             {
@@ -271,6 +293,17 @@ namespace SpaceShooterGame
                             enemiesDefeatedInWave++;
                             enemiesToRemove.Add(e);
 
+                            powerUpCounter++;
+                            if (powerUpCounter >= 4)
+                            {
+                                powerUpCounter = 0;
+
+                                int type = rnd.Next(0, 3);
+                                if (type == 0) powerUps.Add(new HealthPowerUp(hitEnemy.X, hitEnemy.Y));
+                                else if (type == 1) powerUps.Add(new ShieldPowerUp(hitEnemy.X, hitEnemy.Y));
+                                else if (type == 2) powerUps.Add(new TripleShotPowerUp(hitEnemy.X, hitEnemy.Y));
+                            }
+
                             if (hitEnemy is HeavyTankEnemy)
                             {
                                 timer1.Stop();
@@ -302,7 +335,7 @@ namespace SpaceShooterGame
                 {
                     enemyBulletsToRemove.Add(eb);
 
-                    if (invincibilityTimer == 0 && !isGameOver)
+                    if (player.ShieldTimer == 0 && invincibilityTimer == 0 && !isGameOver)
                     {
                         player.HP -= 1;
                         invincibilityTimer = InvincibilityDuration;
@@ -318,7 +351,7 @@ namespace SpaceShooterGame
                 {
                     ((Enemy)e).HP = 0;
 
-                    if (invincibilityTimer == 0 && !isGameOver)
+                    if (player.ShieldTimer == 0 && invincibilityTimer == 0 && !isGameOver)
                     {
                         player.HP -= 1;
                         invincibilityTimer = InvincibilityDuration;
@@ -332,6 +365,27 @@ namespace SpaceShooterGame
                 timer1.Stop();
                 this.Invalidate(); 
             }
+
+            var powerUpsToRemove = new List<GameObject>();
+            Rectangle pRect = new Rectangle(player.X, player.Y, player.Width, player.Height);
+
+            foreach (var pw in powerUps)
+            {
+                Rectangle pwRect = new Rectangle(pw.X, pw.Y, pw.Width, pw.Height);
+
+                if (pwRect.IntersectsWith(pRect))
+                {
+                    ((PowerUp)pw).ApplyEffect(player);
+                    powerUpsToRemove.Add(pw);
+                }
+                else if (pw.Y > this.ClientSize.Height)
+                {
+                    powerUpsToRemove.Add(pw);
+                }
+            }
+
+            foreach (var pw in powerUpsToRemove) powerUps.Remove(pw);
+
         }
 
         private void GameForm_Load(object sender, EventArgs e)
