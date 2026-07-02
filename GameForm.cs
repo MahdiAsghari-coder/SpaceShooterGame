@@ -35,7 +35,9 @@ namespace SpaceShooterGame
 
         List<GameObject> powerUps = new List<GameObject>();
         private int powerUpCounter = 0;//که مثلا هر 4 تا دشمن که مرد پاور بندازه
-
+        
+        
+        List<GameObject> coinsList = new List<GameObject>();
         private int sessionCoins = 0;
 
         Player player = new Player(200, 400);
@@ -45,11 +47,7 @@ namespace SpaceShooterGame
             this.DoubleBuffered = true;//پرش صفحه نداریم دیگه با این خط
             this.KeyPreview = true;
 
-            // اضافه کردن چند دشمن برای تست
-            enemies.Add(new StandardEnemy(50, 50));
-            enemies.Add(new StandardEnemy(150, 50));
         }
-        // این متد برای نقاشی روی فرم است
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -84,20 +82,20 @@ namespace SpaceShooterGame
             }
 
             e.Graphics.DrawString("Lives: " + player.HP, new Font("Arial", 16, FontStyle.Bold), Brushes.Green, new Point(10, 70));
-            // نشون دادن تایم باقی مونده از پاور اپ
-            int uiY = 100;
 
+
+            // نشون دادن تایم باقی مونده از پاور اپ
             if (player.ShieldTimer > 0)
             {
-                int secondsLeft = (player.ShieldTimer / 20) + 1; // تبدیل تیک تایمر به ثانیه
-                e.Graphics.DrawString("Shield: " + secondsLeft + "s", new Font("Arial", 12, FontStyle.Bold), Brushes.Cyan, new Point(10, uiY));
-                uiY += 25;
+                int secondsLeft = (player.ShieldTimer / 60) + 1; // تبدیل تیک تایمر به ثانیه
+                e.Graphics.DrawString("Shield: " + secondsLeft + "s", new Font("Arial", 12, FontStyle.Bold), Brushes.Cyan, new Point(10,130));
+                
             }
 
             if (player.TripleShotTimer > 0)
             {
-                int secondsLeft = (player.TripleShotTimer / 20) + 1;
-                e.Graphics.DrawString("Triple Shot: " + secondsLeft + "s", new Font("Arial", 12, FontStyle.Bold), Brushes.Orange, new Point(10, uiY));
+                int secondsLeft = (player.TripleShotTimer / 60) + 1;
+                e.Graphics.DrawString("Triple Shot: " + secondsLeft + "s", new Font("Arial", 12, FontStyle.Bold), Brushes.Orange, new Point(10,160));
             }
 
             foreach (var enemy in enemies)
@@ -153,6 +151,10 @@ namespace SpaceShooterGame
                     e.Graphics.DrawEllipse(shieldPen, player.X - 8, player.Y - 8, player.Width + 16, player.Height + 16);
                 }
             }
+
+            foreach (var c in coinsList) ((Coin)c).Draw(e.Graphics);
+
+            e.Graphics.DrawString("Coins: " + sessionCoins, new Font("Arial", 16, FontStyle.Bold), Brushes.Yellow, new Point(10, 100));
 
         }
 
@@ -280,6 +282,7 @@ namespace SpaceShooterGame
                 enemies.Add(newEnemy);
             }
 
+            foreach (var c in coinsList) ((Coin)c).Move();
 
             this.Invalidate();//اینجوری فرم دوباره رسم میشه
         }
@@ -309,6 +312,21 @@ namespace SpaceShooterGame
                             score += hitEnemy.EnemyScore;
                             enemiesDefeatedInWave++;
                             enemiesToRemove.Add(e);
+                            //منطق احتمال افتادن سکه ها
+                            int dropChance = rnd.Next(0, 100);
+                            int threshold = 30 + (currentWave * 2);
+
+                            if (dropChance < threshold)
+                            {
+                                if (hitEnemy is HeavyTankEnemy || rnd.Next(0, 10) > 5)
+                                {
+                                    coinsList.Add(new GoldCoin(hitEnemy.X, hitEnemy.Y));
+                                }
+                                else
+                                {
+                                    coinsList.Add(new SilverCoin(hitEnemy.X, hitEnemy.Y));
+                                }
+                            }
 
                             powerUpCounter++;
                             if (powerUpCounter >= 4)
@@ -403,6 +421,26 @@ namespace SpaceShooterGame
             }
 
             foreach (var pw in powerUpsToRemove) powerUps.Remove(pw);
+
+            //برخورد با سکه ها
+            var coinsToRemove = new List<GameObject>();
+
+            foreach (var c in coinsList)
+            {
+                Rectangle cRect = new Rectangle(c.X, c.Y, c.Width, c.Height);
+
+                if (cRect.IntersectsWith(playerRect))
+                {
+                    sessionCoins += ((Coin)c).Value;
+                    coinsToRemove.Add(c);
+                }
+                else if (c.Y > this.ClientSize.Height)
+                {
+                    coinsToRemove.Add(c);
+                }
+            }
+
+            foreach (var c in coinsToRemove) coinsList.Remove(c);
 
         }
 
