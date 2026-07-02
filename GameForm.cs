@@ -36,6 +36,8 @@ namespace SpaceShooterGame
         List<GameObject> powerUps = new List<GameObject>();
         private int powerUpCounter = 0;//که مثلا هر 4 تا دشمن که مرد پاور بندازه
 
+        private int sessionCoins = 0;
+
         Player player = new Player(200, 400);
         public GameForm()
         {
@@ -82,6 +84,21 @@ namespace SpaceShooterGame
             }
 
             e.Graphics.DrawString("Lives: " + player.HP, new Font("Arial", 16, FontStyle.Bold), Brushes.Green, new Point(10, 70));
+            // نشون دادن تایم باقی مونده از پاور اپ
+            int uiY = 100;
+
+            if (player.ShieldTimer > 0)
+            {
+                int secondsLeft = (player.ShieldTimer / 20) + 1; // تبدیل تیک تایمر به ثانیه
+                e.Graphics.DrawString("Shield: " + secondsLeft + "s", new Font("Arial", 12, FontStyle.Bold), Brushes.Cyan, new Point(10, uiY));
+                uiY += 25;
+            }
+
+            if (player.TripleShotTimer > 0)
+            {
+                int secondsLeft = (player.TripleShotTimer / 20) + 1;
+                e.Graphics.DrawString("Triple Shot: " + secondsLeft + "s", new Font("Arial", 12, FontStyle.Bold), Brushes.Orange, new Point(10, uiY));
+            }
 
             foreach (var enemy in enemies)
             {
@@ -350,6 +367,7 @@ namespace SpaceShooterGame
                 if (enemyRect.IntersectsWith(playerRect))
                 {
                     ((Enemy)e).HP = 0;
+                    enemiesToRemove.Add(e);
 
                     if (player.ShieldTimer == 0 && invincibilityTimer == 0 && !isGameOver)
                     {
