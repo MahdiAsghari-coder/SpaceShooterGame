@@ -186,10 +186,7 @@ namespace SpaceShooterGame
             if (player.ShieldTimer > 0) player.ShieldTimer--;
             if (player.TripleShotTimer > 0) player.TripleShotTimer--;
 
-            foreach (var pw in powerUps)
-            {
-                ((PowerUp)pw).Move();
-            }
+            
             if (isWaveTransition)
             {
                 transitionTimer++;
@@ -203,6 +200,17 @@ namespace SpaceShooterGame
                 }
                 this.Invalidate();
                 return;
+            }
+
+            foreach (var pw in powerUps)
+            {
+                ((PowerUp)pw).Move();
+            }
+
+
+            foreach (var c in coinsList)
+            {
+                ((Coin)c).Move();
             }
 
             if (isMovingLeft) player.MoveLeft();
@@ -282,7 +290,6 @@ namespace SpaceShooterGame
                 enemies.Add(newEnemy);
             }
 
-            foreach (var c in coinsList) ((Coin)c).Move();
 
             this.Invalidate();//اینجوری فرم دوباره رسم میشه
         }
@@ -341,6 +348,8 @@ namespace SpaceShooterGame
 
                             if (hitEnemy is HeavyTankEnemy)
                             {
+                                // ذخیره در دیتابیس
+                                DatabaseManager.SaveGameResult(score, sessionCoins);
                                 timer1.Stop();
                                 MessageBox.Show("تبریک! شما غول را کشتید و بازی تمام شد!", "پایان بازی");
                                 this.Close();
@@ -398,6 +407,8 @@ namespace SpaceShooterGame
             if (player.HP <= 0 && !isGameOver)
             {
                 isGameOver = true;
+                // ذخیره در دیتابیس
+                DatabaseManager.SaveGameResult(score, sessionCoins);
                 timer1.Stop();
                 this.Invalidate(); 
             }
