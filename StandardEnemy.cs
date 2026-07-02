@@ -7,6 +7,7 @@ namespace SpaceShooterGame
         public StandardEnemy(int x, int y) : base(x, y, 40, 40)
         {
             HP = 1;
+            MaxHP = HP;
             Speed = 3;
             EnemyScore = 10;
         }

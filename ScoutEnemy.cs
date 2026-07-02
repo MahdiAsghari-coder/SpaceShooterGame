@@ -11,6 +11,7 @@ namespace SpaceShooterGame
         public ScoutEnemy(int x, int y) : base(x, y, 40, 40)
         {
             HP = 1;
+            MaxHP = HP;
             Speed = 5;
             EnemyScore = 20;
             startX = x;

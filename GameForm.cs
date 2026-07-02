@@ -29,6 +29,10 @@ namespace SpaceShooterGame
         private bool isWaveTransition = false;
         private int transitionTimer = 0;
 
+        private bool isGameOver = false;
+        private int invincibilityTimer = 0;
+        private const int InvincibilityDuration = 50;
+
 
         Player player = new Player(200, 400);
         public GameForm()
@@ -74,15 +78,62 @@ namespace SpaceShooterGame
                     (this.ClientSize.Width - textSize.Width) / 2,
                     (this.ClientSize.Height - textSize.Height) / 2);
             }
+
+            e.Graphics.DrawString("Lives: " + player.HP, new Font("Arial", 16, FontStyle.Bold), Brushes.Green, new Point(10, 70));
+
+            foreach (var enemy in enemies)
+            {
+                Enemy en = (Enemy)enemy;
+
+                if (en.MaxHP > 0 && en.HP > 0)
+                {
+                    float hpPercentage = (float)en.HP / en.MaxHP;
+
+                    if (hpPercentage > 1) hpPercentage = 1;
+
+                    int barWidth = (int)(en.Width * hpPercentage);
+
+                    e.Graphics.FillRectangle(Brushes.Red, en.X, en.Y - 8, en.Width, 4);
+
+                    e.Graphics.FillRectangle(Brushes.LimeGreen, en.X, en.Y - 8, barWidth, 4);
+                }
+            }
+
+            if (isGameOver)
+            {
+                e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(150, Color.Black)), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+
+                string gameOverText = "GAME OVER";
+                string scoreText = "Your Score: " + score;
+                string restartText = "Press ESC to Return to Menu";
+
+                Font fontTitle = new Font("Arial", 36, FontStyle.Bold);
+                Font fontSub = new Font("Arial", 18, FontStyle.Regular);
+
+                SizeF sizeTitle = e.Graphics.MeasureString(gameOverText, fontTitle);
+                SizeF sizeScore = e.Graphics.MeasureString(scoreText, fontSub);
+                SizeF sizeRestart = e.Graphics.MeasureString(restartText, fontSub);
+
+                int centerX = this.ClientSize.Width / 2;
+                int centerY = this.ClientSize.Height / 2;
+
+                e.Graphics.DrawString(gameOverText, fontTitle, Brushes.Red, centerX - (sizeTitle.Width / 2), centerY - 60);
+                e.Graphics.DrawString(scoreText, fontSub, Brushes.White, centerX - (sizeScore.Width / 2), centerY + 10);
+                e.Graphics.DrawString(restartText, fontSub, Brushes.Yellow, centerX - (sizeRestart.Width / 2), centerY + 50);
+            }
+
         }
 
-        // این متد برای حرکت با کیبورد است
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
             if (e.KeyCode == Keys.Left) isMovingLeft = true;
             if (e.KeyCode == Keys.Right) isMovingRight = true;
-            if (e.KeyCode == Keys.Space) isShooting = true; // دستت روی اسپیس هست
+            if (e.KeyCode == Keys.Space) isShooting = true;
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -96,6 +147,7 @@ namespace SpaceShooterGame
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (isGameOver) return;
             if (isWaveTransition)
             {
                 transitionTimer++;
@@ -183,6 +235,7 @@ namespace SpaceShooterGame
                 else newEnemy = new StandardEnemy(randomX, -50);
 
                 newEnemy.HP = newEnemy.HP + (2 * currentWave);
+                newEnemy.MaxHP = newEnemy.HP;
                 newEnemy.Speed = (int)(newEnemy.Speed * (1 + 0.1 * currentWave));
 
                 enemies.Add(newEnemy);
@@ -231,6 +284,54 @@ namespace SpaceShooterGame
 
             foreach (var b in bulletsToRemove) bullets.Remove(b);
             foreach (var e in enemiesToRemove) enemies.Remove(e);
+
+
+
+            Rectangle playerRect = new Rectangle(player.X, player.Y, player.Width, player.Height);
+            var enemyBulletsToRemove = new List<GameObject>();
+
+            if (invincibilityTimer > 0)
+            {
+                invincibilityTimer--;
+            }
+
+            foreach (var eb in enemyBullets)
+            {
+                Rectangle ebRect = new Rectangle(eb.X, eb.Y, eb.Width, eb.Height);
+                if (ebRect.IntersectsWith(playerRect))
+                {
+                    enemyBulletsToRemove.Add(eb);
+
+                    if (invincibilityTimer == 0 && !isGameOver)
+                    {
+                        player.HP -= 1;
+                        invincibilityTimer = InvincibilityDuration;
+                    }
+                }
+            }
+            foreach (var eb in enemyBulletsToRemove) enemyBullets.Remove(eb);
+
+            foreach (var e in enemies)
+            {
+                Rectangle enemyRect = new Rectangle(e.X, e.Y, e.Width, e.Height);
+                if (enemyRect.IntersectsWith(playerRect))
+                {
+                    ((Enemy)e).HP = 0;
+
+                    if (invincibilityTimer == 0 && !isGameOver)
+                    {
+                        player.HP -= 1;
+                        invincibilityTimer = InvincibilityDuration;
+                    }
+                }
+            }
+
+            if (player.HP <= 0 && !isGameOver)
+            {
+                isGameOver = true;
+                timer1.Stop();
+                this.Invalidate(); 
+            }
         }
 
         private void GameForm_Load(object sender, EventArgs e)

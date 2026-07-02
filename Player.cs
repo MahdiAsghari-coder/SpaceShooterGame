@@ -6,6 +6,7 @@ namespace SpaceShooterGame
     public class Player : GameObject
     {
         public int Speed { get; set; } = 10;
+        public int HP { get; set; } = 3;
 
         public Player(int x, int y)
         {

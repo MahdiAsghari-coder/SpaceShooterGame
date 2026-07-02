@@ -10,6 +10,7 @@ namespace SpaceShooterGame
         public HeavyTankEnemy(int x, int y) : base(x, y, 80, 80) // سایز بزرگتر
         {
             HP = 20;
+            MaxHP = HP;
             Speed = 1;
             EnemyScore = 100;
         }

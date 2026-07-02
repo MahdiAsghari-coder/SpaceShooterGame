@@ -6,6 +6,7 @@ namespace SpaceShooterGame
     public abstract class Enemy : GameObject
     {
         public int HP { get; set; }
+        public int MaxHP { get; set; }
         public int Speed { get; set; }
         public int EnemyScore { get; set; }
 
