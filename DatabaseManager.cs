@@ -18,8 +18,7 @@ namespace SpaceShooterGame
                 using (var conn = new SQLiteConnection(connectionString))
                 {
                     conn.Open();
-                    // ساخت جدول با یک ردیف برای ذخیره سکه و بالاترین رکورد
-                    string createTable = "CREATE TABLE IF NOT EXISTS PlayerStats (Id INTEGER PRIMARY KEY, HighScore INTEGER, TotalCoins INTEGER)";
+                    string createTable = "CREATE TABLE IF NOT EXISTS PlayerStats (Id INTEGER PRIMARY KEY, HighScore INTEGER, TotalCoins INTEGER, ExtraHP INTEGER DEFAULT 0)";
                     using (var cmd = new SQLiteCommand(createTable, conn))
                     {
                         cmd.ExecuteNonQuery();
@@ -84,5 +83,42 @@ namespace SpaceShooterGame
                 }
             }
         }
+
+        // ۱. متد خواندن تعداد جان‌های خریداری شده
+        public static int GetExtraHP()
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                string query = "SELECT ExtraHP FROM PlayerStats WHERE Id = 1";
+                using (var cmd = new SQLiteCommand(query, conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    return result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                }
+            }
+        }
+
+        // ۲. متد خرید جان و کسر سکه از دیتابیس
+        public static bool BuyExtraHP(int cost)
+        {
+            int currentCoins = GetTotalCoins();
+            if (currentCoins >= cost)
+            {
+                using (var conn = new SQLiteConnection(connectionString))
+                {
+                    conn.Open();
+                    string updateQuery = "UPDATE PlayerStats SET TotalCoins = TotalCoins - @cost, ExtraHP = ExtraHP + 1 WHERE Id = 1";
+                    using (var cmd = new SQLiteCommand(updateQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@cost", cost);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
     }
 }

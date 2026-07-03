@@ -12,10 +12,39 @@ namespace SpaceShooterGame
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            GameForm gameForm = new GameForm();
-            this.Hide();           // منو مخفی شود
-            gameForm.ShowDialog();  // بازی اجرا شود
-            this.Show();           // وقتی بازی بسته شد، منو برگردد
+            this.Hide();
+            GameForm game = new GameForm();
+            game.ShowDialog();
+            this.Show();
+            UpdateStats();
         }
+
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            ShopForm shop = new ShopForm();
+            shop.ShowDialog();
+            this.Show();
+            UpdateStats();
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void MainMenuForm_Load(object sender, EventArgs e)
+        {
+            UpdateStats();
+        }
+        private void UpdateStats()
+        {
+            lblHighScore.Text = "High Score: " + DatabaseManager.GetHighScore().ToString();
+            lblTotalCoins.Text = "Total Coins: " + DatabaseManager.GetTotalCoins().ToString();
+        }
+
+        
     }
 }

@@ -7,6 +7,7 @@ namespace SpaceShooterGame
     {
         public int Speed { get; set; } = 10;
         public int HP { get; set; } = 3;
+        public int MaxHP { get; set; } = 3;
         public int ShieldTimer { get; set; } = 0;
         public int TripleShotTimer { get; set; } = 0;
 

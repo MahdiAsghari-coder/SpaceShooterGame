@@ -457,7 +457,10 @@ namespace SpaceShooterGame
 
         private void GameForm_Load(object sender, EventArgs e)
         {
-
+            // خواندن تعداد جان‌های اضافه از دیتابیس و اضافه کردن به سفینه بازیکن
+            int extraHP = DatabaseManager.GetExtraHP();
+            player.MaxHP += extraHP;
+            player.HP = player.MaxHP; // پر شدن خون بازیکن بر اساس ارتقای جدید
         }
     }
 }
