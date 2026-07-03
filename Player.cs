@@ -11,6 +11,8 @@ namespace SpaceShooterGame
         public int ShieldTimer { get; set; } = 0;
         public int TripleShotTimer { get; set; } = 0;
 
+        public int SkinType { get; set; } = 0;
+
         public Player(int x, int y)
         {
             X = x;
@@ -21,10 +23,22 @@ namespace SpaceShooterGame
 
         public override void Draw(Graphics g)
         {
-            g.DrawImage(Properties.Resources.player_ship, X, Y, Width, Height);
+            // رسم ظاهر سفینه بر اساس خرید کاربر
+            if (SkinType == 1)
+                g.DrawImage(Properties.Resources.ship_eagle, X, Y, Width, Height);
+            else if (SkinType == 2)
+                g.DrawImage(Properties.Resources.ship_ghost, X, Y, Width, Height);
+            else
+                g.DrawImage(Properties.Resources.player_ship, X, Y, Width, Height);
         }
 
-        public void MoveLeft() { if (X > 0) X -= Speed; }
-        public void MoveRight(int formWidth) { if (X < formWidth - Width) X += Speed; }
+        public void MoveLeft()
+        {
+            if (X > 0) X -= Speed;
+        }
+        public void MoveRight(int formWidth) 
+        { 
+            if (X < formWidth - Width) X += Speed;
+        }
     }
 }

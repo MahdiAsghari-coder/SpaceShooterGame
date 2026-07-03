@@ -17,8 +17,7 @@ namespace SpaceShooterGame
                 SQLiteConnection.CreateFile(dbFile);
                 using (var conn = new SQLiteConnection(connectionString))
                 {
-                    conn.Open();
-                    string createTable = "CREATE TABLE IF NOT EXISTS PlayerStats (Id INTEGER PRIMARY KEY, HighScore INTEGER, TotalCoins INTEGER, ExtraHP INTEGER DEFAULT 0)";
+                    conn.Open(); string createTable = "CREATE TABLE IF NOT EXISTS PlayerStats (Id INTEGER PRIMARY KEY, HighScore INTEGER, TotalCoins INTEGER, ExtraHP INTEGER DEFAULT 0, ShipSkin INTEGER DEFAULT 0, BgSkin INTEGER DEFAULT 0, BulletSkin INTEGER DEFAULT 0)";
                     using (var cmd = new SQLiteCommand(createTable, conn))
                     {
                         cmd.ExecuteNonQuery();
@@ -84,7 +83,7 @@ namespace SpaceShooterGame
             }
         }
 
-        // ۱. متد خواندن تعداد جان‌های خریداری شده
+        //  متد خواندن تعداد جان‌های خریداری شده
         public static int GetExtraHP()
         {
             using (var conn = new SQLiteConnection(connectionString))
@@ -99,7 +98,7 @@ namespace SpaceShooterGame
             }
         }
 
-        // ۲. متد خرید جان و کسر سکه از دیتابیس
+        //  متد خرید جان و کسر سکه از دیتابیس
         public static bool BuyExtraHP(int cost)
         {
             int currentCoins = GetTotalCoins();
@@ -118,6 +117,44 @@ namespace SpaceShooterGame
                 return true;
             }
             return false;
+        }
+
+        // خرید و تغییر اسکین
+        public static bool BuyAndEquipSkin(string skinType, int skinId, int cost)
+        {
+            int currentCoins = GetTotalCoins();
+            if (currentCoins >= cost)
+            {
+                using (var conn = new SQLiteConnection(connectionString))
+                {
+                    conn.Open();
+                    // کم کردن پول و ثبت اسکین جدید
+                    string updateQuery = $"UPDATE PlayerStats SET TotalCoins = TotalCoins - @cost, {skinType} = @id WHERE Id = 1";
+                    using (var cmd = new SQLiteCommand(updateQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@cost", cost);
+                        cmd.Parameters.AddWithValue("@id", skinId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        // خواندن اطلاعات اسکین‌های انتخاب شده
+        public static int GetSkin(string skinType)
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                string query = $"SELECT {skinType} FROM PlayerStats WHERE Id = 1";
+                using (var cmd = new SQLiteCommand(query, conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    return result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                }
+            }
         }
 
     }

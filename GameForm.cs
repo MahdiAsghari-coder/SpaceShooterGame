@@ -175,7 +175,7 @@ namespace SpaceShooterGame
             base.OnKeyUp(e);
             if (e.KeyCode == Keys.Left) isMovingLeft = false;
             if (e.KeyCode == Keys.Right) isMovingRight = false;
-            if (e.KeyCode == Keys.Space) isShooting = false; // دستت رو از اسپیس برداشتی
+            if (e.KeyCode == Keys.Space) isShooting = false;
         }
 
 
@@ -220,16 +220,34 @@ namespace SpaceShooterGame
 
             if (isShooting && shootCooldown == 0)
             {
+                // ۱. ابتدا اسکین تیر فعال را از دیتابیس می‌خوانیم
+                int activeBulletSkin = DatabaseManager.GetSkin("BulletSkin");
+
                 if (player.TripleShotTimer > 0)
                 {
-                    bullets.Add(new Bullet(player.X - 10, player.Y));
-                    bullets.Add(new Bullet(player.X + 20, player.Y));
-                    bullets.Add(new Bullet(player.X + 50, player.Y));
+                    Bullet b1 = new Bullet(player.X - 10, player.Y);
+                    Bullet b2 = new Bullet(player.X + 20, player.Y);
+                    Bullet b3 = new Bullet(player.X + 50, player.Y);
+
+                    // اعمال اسکین خریداری شده
+                    b1.SkinType = activeBulletSkin;
+                    b2.SkinType = activeBulletSkin;
+                    b3.SkinType = activeBulletSkin;
+
+                    bullets.Add(b1);
+                    bullets.Add(b2);
+                    bullets.Add(b3);
                 }
                 else
                 {
-                    bullets.Add(new Bullet(player.X + 20, player.Y));
+                    Bullet b = new Bullet(player.X + 20, player.Y);
+
+                    // اعمال اسکین خریداری شده
+                    b.SkinType = activeBulletSkin;
+
+                    bullets.Add(b);
                 }
+
                 shootCooldown = FIRE_RATE_DELAY;
             }
 
@@ -460,7 +478,27 @@ namespace SpaceShooterGame
             // خواندن تعداد جان‌های اضافه از دیتابیس و اضافه کردن به سفینه بازیکن
             int extraHP = DatabaseManager.GetExtraHP();
             player.MaxHP += extraHP;
-            player.HP = player.MaxHP; // پر شدن خون بازیکن بر اساس ارتقای جدید
+            player.HP = player.MaxHP;
+
+            // تنظیم سفینه
+            player.SkinType = DatabaseManager.GetSkin("ShipSkin");
+
+            // تنظیم پس‌زمینه بازی
+            int bgType = DatabaseManager.GetSkin("BgSkin");
+
+            if (bgType == 1)
+            {
+                this.BackgroundImage = Properties.Resources.bg_mars;
+            }
+            else if (bgType == 2)
+            {
+                this.BackgroundImage = Properties.Resources.bg_galaxy;
+            }
+            else
+            {
+                this.BackgroundImage = null;
+                this.BackColor = Color.White;
+            }
         }
     }
 }

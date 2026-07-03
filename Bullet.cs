@@ -5,6 +5,9 @@ namespace SpaceShooterGame
 {
     public class Bullet : GameObject
     {
+
+        public int SkinType { get; set; } = 0;
+
         public Bullet(int x, int y)
         {
             X = x;
@@ -15,8 +18,12 @@ namespace SpaceShooterGame
 
         public override void Draw(Graphics g)
         {
-            // رسم گلوله بازیکن
-            g.DrawImage(global::SpaceShooterGame.Properties.Resources.bullet_player, X, Y, Width, Height);
+            if (SkinType == 1)
+                g.DrawImage(Properties.Resources.bullet_plasma, X, Y, Width, Height);
+            else if (SkinType == 2)
+                g.DrawImage(Properties.Resources.bullet_green, X, Y, Width, Height);
+            else
+                g.DrawImage(Properties.Resources.bullet_player, X, Y, Width, Height);
         }
 
         public void MoveUp()
