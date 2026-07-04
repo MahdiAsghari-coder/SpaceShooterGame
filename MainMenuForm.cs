@@ -47,8 +47,11 @@ namespace SpaceShooterGame
 
         private void btnAbout_Click(object sender, EventArgs e)
         {
+            this.Hide();
+
             AboutForm about = new AboutForm();
             about.ShowDialog();
+            this.Show();
         }
     }
 }

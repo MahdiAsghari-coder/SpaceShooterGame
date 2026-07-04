@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Media;
 
 namespace SpaceShooterGame
 {
@@ -255,7 +256,7 @@ namespace SpaceShooterGame
 
                     bullets.Add(b);
                 }
-
+                new SoundPlayer(Properties.Resources.snd_shoot).Play();
                 shootCooldown = FIRE_RATE_DELAY;
             }
 
@@ -342,6 +343,7 @@ namespace SpaceShooterGame
 
                         if (hitEnemy.HP <= 0)
                         {
+                            new SoundPlayer(Properties.Resources.snd_boom).Play();
                             score += hitEnemy.EnemyScore;
                             enemiesDefeatedInWave++;
                             enemiesToRemove.Add(e);
@@ -468,6 +470,7 @@ namespace SpaceShooterGame
 
                 if (cRect.IntersectsWith(playerRect))
                 {
+                    new SoundPlayer(Properties.Resources.snd_coin).Play();
                     sessionCoins += ((Coin)c).Value;
                     coinsToRemove.Add(c);
                 }
@@ -483,6 +486,10 @@ namespace SpaceShooterGame
 
         private void GameForm_Load(object sender, EventArgs e)
         {
+
+            SoundPlayer bgMusic = new SoundPlayer(Properties.Resources.snd_bg);
+            bgMusic.PlayLooping();
+
             // خواندن تعداد جان‌های اضافه از دیتابیس و اضافه کردن به سفینه بازیکن
             int extraHP = DatabaseManager.GetExtraHP();
             player.MaxHP += extraHP;
