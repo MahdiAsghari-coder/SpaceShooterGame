@@ -34,6 +34,8 @@
             btnShop = new Button();
             btnExit = new Button();
             Title = new Label();
+            btnAbout = new Button();
+            btnOption = new Button();
             SuspendLayout();
             // 
             // btnplay
@@ -43,7 +45,7 @@
             btnplay.ForeColor = Color.Black;
             btnplay.Location = new Point(199, 79);
             btnplay.Name = "btnplay";
-            btnplay.Size = new Size(252, 98);
+            btnplay.Size = new Size(252, 69);
             btnplay.TabIndex = 1;
             btnplay.Text = "Play";
             btnplay.UseVisualStyleBackColor = false;
@@ -74,9 +76,9 @@
             btnShop.BackColor = Color.Green;
             btnShop.Font = new Font("Ink Free", 16.2F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
             btnShop.ForeColor = Color.Black;
-            btnShop.Location = new Point(199, 197);
+            btnShop.Location = new Point(199, 164);
             btnShop.Name = "btnShop";
-            btnShop.Size = new Size(252, 97);
+            btnShop.Size = new Size(252, 69);
             btnShop.TabIndex = 4;
             btnShop.Text = "Shop";
             btnShop.UseVisualStyleBackColor = false;
@@ -103,12 +105,37 @@
             Title.TabIndex = 6;
             Title.Text = "SpaceShooterGame";
             // 
+            // btnAbout
+            // 
+            btnAbout.BackColor = Color.Green;
+            btnAbout.Font = new Font("Segoe Print", 13.8F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            btnAbout.Location = new Point(199, 257);
+            btnAbout.Name = "btnAbout";
+            btnAbout.Size = new Size(252, 64);
+            btnAbout.TabIndex = 7;
+            btnAbout.Text = "About me";
+            btnAbout.UseVisualStyleBackColor = false;
+            btnAbout.Click += btnAbout_Click;
+            // 
+            // btnOption
+            // 
+            btnOption.BackColor = Color.Green;
+            btnOption.Font = new Font("Segoe Print", 13.8F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            btnOption.Location = new Point(199, 345);
+            btnOption.Name = "btnOption";
+            btnOption.Size = new Size(252, 59);
+            btnOption.TabIndex = 8;
+            btnOption.Text = "Option";
+            btnOption.UseVisualStyleBackColor = false;
+            // 
             // MainMenuForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             ClientSize = new Size(659, 450);
+            Controls.Add(btnOption);
+            Controls.Add(btnAbout);
             Controls.Add(Title);
             Controls.Add(btnExit);
             Controls.Add(btnShop);
@@ -130,5 +157,7 @@
         private Button btnShop;
         private Button btnExit;
         private Label Title;
+        private Button btnAbout;
+        private Button btnOption;
     }
 }

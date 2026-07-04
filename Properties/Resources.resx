@@ -160,4 +160,16 @@
   <data name="ship_ghost" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ship_ghost.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="snd_bg" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\snd_bg.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="snd_boom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\snd_boom.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="snd_coin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\snd_coin.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="snd_shoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\snd_shoot.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

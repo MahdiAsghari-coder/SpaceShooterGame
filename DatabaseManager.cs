@@ -17,7 +17,22 @@ namespace SpaceShooterGame
                 SQLiteConnection.CreateFile(dbFile);
                 using (var conn = new SQLiteConnection(connectionString))
                 {
-                    conn.Open(); string createTable = "CREATE TABLE IF NOT EXISTS PlayerStats (Id INTEGER PRIMARY KEY, HighScore INTEGER, TotalCoins INTEGER, ExtraHP INTEGER DEFAULT 0, ShipSkin INTEGER DEFAULT 0, BgSkin INTEGER DEFAULT 0, BulletSkin INTEGER DEFAULT 0)";
+                    conn.Open();
+                    //تغییر جدول به خاطر باگ چند بار خریدن یک ایتم در فروشگاه
+                    string createTable = "CREATE TABLE IF NOT EXISTS PlayerStats (" +
+                     "Id INTEGER PRIMARY KEY, " +
+                     "HighScore INTEGER, " +
+                     "TotalCoins INTEGER, " +
+                     "ExtraHP INTEGER DEFAULT 0, " +
+                     "ShipSkin INTEGER DEFAULT 0, " +
+                     "BgSkin INTEGER DEFAULT 0, " +
+                     "BulletSkin INTEGER DEFAULT 0, " +
+                     "OwnsEagle INTEGER DEFAULT 0, " +
+                     "OwnsGhost INTEGER DEFAULT 0, " +
+                     "OwnsMars INTEGER DEFAULT 0, " +
+                     "OwnsGalaxy INTEGER DEFAULT 0, " +
+                     "OwnsPlasma INTEGER DEFAULT 0, " +
+                     "OwnsGreen INTEGER DEFAULT 0)";
                     using (var cmd = new SQLiteCommand(createTable, conn))
                     {
                         cmd.ExecuteNonQuery();
@@ -119,8 +134,38 @@ namespace SpaceShooterGame
             return false;
         }
 
-        // خرید و تغییر اسکین
-        public static bool BuyAndEquipSkin(string skinType, int skinId, int cost)
+        //  بررسی اینکه آیا بازیکن قبلاً این آیتم را خریده است یا نه؟
+        public static bool IsOwned(string ownershipColumn)
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                string query = $"SELECT {ownershipColumn} FROM PlayerStats WHERE Id = 1";
+                using (var cmd = new SQLiteCommand(query, conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    return result != DBNull.Value && Convert.ToInt32(result) == 1;
+                }
+            }
+        }
+
+        //  فقط انتخاب کردن آیتم (وقتی قبلاً خریده شده، پولی کم نمی‌شود)
+        public static void EquipSkin(string skinType, int skinId)
+        {
+            using (var conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                string updateQuery = $"UPDATE PlayerStats SET {skinType} = @id WHERE Id = 1";
+                using (var cmd = new SQLiteCommand(updateQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", skinId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        //  خرید برای اولین بار و ثبت مالکیت دائمی
+        public static bool BuyAndOwnSkin(string skinType, int skinId, int cost, string ownershipColumn)
         {
             int currentCoins = GetTotalCoins();
             if (currentCoins >= cost)
@@ -128,8 +173,8 @@ namespace SpaceShooterGame
                 using (var conn = new SQLiteConnection(connectionString))
                 {
                     conn.Open();
-                    // کم کردن پول و ثبت اسکین جدید
-                    string updateQuery = $"UPDATE PlayerStats SET TotalCoins = TotalCoins - @cost, {skinType} = @id WHERE Id = 1";
+                    // هم پول کم می‌شود، هم اسکین فعال می‌شود و هم ستون مالکیت عدد 1 (یعنی دارا بودن) می‌گیرد
+                    string updateQuery = $"UPDATE PlayerStats SET TotalCoins = TotalCoins - @cost, {skinType} = @id, {ownershipColumn} = 1 WHERE Id = 1";
                     using (var cmd = new SQLiteCommand(updateQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@cost", cost);

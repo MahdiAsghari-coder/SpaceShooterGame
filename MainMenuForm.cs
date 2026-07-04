@@ -45,6 +45,10 @@ namespace SpaceShooterGame
             lblTotalCoins.Text = "Total Coins: " + DatabaseManager.GetTotalCoins().ToString();
         }
 
-        
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            AboutForm about = new AboutForm();
+            about.ShowDialog();
+        }
     }
 }

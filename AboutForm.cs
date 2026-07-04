@@ -14,5 +14,10 @@ namespace SpaceShooterGame
         {
             InitializeComponent();
         }
+
+        private void btnBackToMenu_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
