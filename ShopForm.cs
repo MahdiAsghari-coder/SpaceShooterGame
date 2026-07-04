@@ -24,13 +24,13 @@ namespace SpaceShooterGame
         {
             if (DatabaseManager.BuyExtraHP(50))
             {
-                lblMessage.ForeColor = System.Drawing.Color.Green; // تغییر رنگ به سبز برای موفقیت
+                lblMessage.ForeColor = System.Drawing.Color.Red;
                 lblMessage.Text = "ارتقای جان با موفقیت خریداری و اعمال شد!";
                 UpdateShopUI();
             }
             else
             {
-                lblMessage.ForeColor = System.Drawing.Color.Red; // تغییر رنگ به قرمز برای خطا
+                lblMessage.ForeColor = System.Drawing.Color.Red;
                 lblMessage.Text = "سکه کافی موجود نیست!";
             }
         }
@@ -45,7 +45,6 @@ namespace SpaceShooterGame
             int currentExtraHP = DatabaseManager.GetExtraHP();
             btnBuyHP.Text = $"خرید جان اضافه (قیمت: 50) - تعداد فعلی: {currentExtraHP}";
 
-            lblMessage.Text = "";
 
         }
 
@@ -53,7 +52,7 @@ namespace SpaceShooterGame
         {
             if (DatabaseManager.BuyAndEquipSkin("ShipSkin", 1, 100))
             {
-                lblMessage.ForeColor = System.Drawing.Color.Green;
+                lblMessage.ForeColor = System.Drawing.Color.Red;
                 lblMessage.Text = "سفینه عقاب خریداری و مجهز شد!";
                 UpdateShopUI();
             }
@@ -68,7 +67,7 @@ namespace SpaceShooterGame
         {
             if (DatabaseManager.BuyAndEquipSkin("ShipSkin", 2, 150))
             {
-                lblMessage.ForeColor = System.Drawing.Color.Green;
+                lblMessage.ForeColor = System.Drawing.Color.Red;
                 lblMessage.Text = "سفینه روح خریداری و مجهز شد!";
                 UpdateShopUI();
             }
@@ -81,9 +80,9 @@ namespace SpaceShooterGame
 
         private void btnBuyMars_Click(object sender, EventArgs e)
         {
-            if (DatabaseManager.BuyAndEquipSkin("BgSkin", 1, 75))
+            if (DatabaseManager.BuyAndEquipSkin("BgSkin", 1, 70))
             {
-                lblMessage.ForeColor = System.Drawing.Color.Green;
+                lblMessage.ForeColor = System.Drawing.Color.Red;
                 lblMessage.Text = "پس‌زمینه مریخ خریداری و اعمال شد!";
                 UpdateShopUI();
             }
@@ -96,9 +95,9 @@ namespace SpaceShooterGame
 
         private void btnBuyGalaxy_Click(object sender, EventArgs e)
         {
-            if (DatabaseManager.BuyAndEquipSkin("BgSkin", 2, 75))
+            if (DatabaseManager.BuyAndEquipSkin("BgSkin", 2, 100))
             {
-                lblMessage.ForeColor = System.Drawing.Color.Green;
+                lblMessage.ForeColor = System.Drawing.Color.Red;
                 lblMessage.Text = "پس‌زمینه کهکشان خریداری و اعمال شد!";
                 UpdateShopUI();
             }
@@ -113,7 +112,7 @@ namespace SpaceShooterGame
         {
             if (DatabaseManager.BuyAndEquipSkin("BulletSkin", 1, 80))
             {
-                lblMessage.ForeColor = System.Drawing.Color.Green;
+                lblMessage.ForeColor = System.Drawing.Color.Red;
                 lblMessage.Text = "تیر بنفش خریداری و مجهز شد!";
                 UpdateShopUI();
             }
@@ -128,7 +127,7 @@ namespace SpaceShooterGame
         {
             if (DatabaseManager.BuyAndEquipSkin("BulletSkin", 2, 60))
             {
-                lblMessage.ForeColor = System.Drawing.Color.Green;
+                lblMessage.ForeColor = System.Drawing.Color.Red;
                 lblMessage.Text = "تیر سبز خریداری و مجهز شد!";
                 UpdateShopUI();
             }

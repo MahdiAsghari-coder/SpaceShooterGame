@@ -18,6 +18,8 @@ namespace SpaceShooterGame
         Random rnd = new Random();
         private bool isMovingLeft = false;
         private bool isMovingRight = false;
+        bool isMovingUp = false;
+        bool isMovingDown = false;
         private bool isShooting = false;
         private int shootCooldown = 0; // تایمر برای فاصله بین شلیک‌ها
         private const int FIRE_RATE_DELAY = 10;
@@ -163,6 +165,8 @@ namespace SpaceShooterGame
             base.OnKeyDown(e);
             if (e.KeyCode == Keys.Left) isMovingLeft = true;
             if (e.KeyCode == Keys.Right) isMovingRight = true;
+            if (e.KeyCode == Keys.Up) isMovingUp = true;
+            if (e.KeyCode == Keys.Down) isMovingDown = true;
             if (e.KeyCode == Keys.Space) isShooting = true;
             if (e.KeyCode == Keys.Escape)
             {
@@ -175,6 +179,8 @@ namespace SpaceShooterGame
             base.OnKeyUp(e);
             if (e.KeyCode == Keys.Left) isMovingLeft = false;
             if (e.KeyCode == Keys.Right) isMovingRight = false;
+            if (e.KeyCode == Keys.Up) isMovingUp = false;
+            if (e.KeyCode == Keys.Down) isMovingDown = false;
             if (e.KeyCode == Keys.Space) isShooting = false;
         }
 
@@ -215,6 +221,8 @@ namespace SpaceShooterGame
 
             if (isMovingLeft) player.MoveLeft();
             if (isMovingRight) player.MoveRight(this.ClientSize.Width);
+            if (isMovingUp) player.MoveUp();
+            if (isMovingDown) player.MoveDown(this.ClientSize.Height);
 
             if (shootCooldown > 0) shootCooldown--;
 

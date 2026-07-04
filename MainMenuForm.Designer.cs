@@ -33,22 +33,27 @@
             lblTotalCoins = new Label();
             btnShop = new Button();
             btnExit = new Button();
+            Title = new Label();
             SuspendLayout();
             // 
             // btnplay
             // 
-            btnplay.Location = new Point(199, 46);
+            btnplay.BackColor = Color.Green;
+            btnplay.Font = new Font("Ink Free", 16.2F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            btnplay.ForeColor = Color.Black;
+            btnplay.Location = new Point(199, 79);
             btnplay.Name = "btnplay";
             btnplay.Size = new Size(252, 98);
             btnplay.TabIndex = 1;
-            btnplay.Text = "شروع بازی ";
-            btnplay.UseVisualStyleBackColor = true;
+            btnplay.Text = "Play";
+            btnplay.UseVisualStyleBackColor = false;
             btnplay.Click += btnPlay_Click;
             // 
             // lblHighScore
             // 
             lblHighScore.AutoSize = true;
-            lblHighScore.Location = new Point(533, 24);
+            lblHighScore.BackColor = Color.Green;
+            lblHighScore.Location = new Point(533, 9);
             lblHighScore.Name = "lblHighScore";
             lblHighScore.Size = new Size(97, 20);
             lblHighScore.TabIndex = 2;
@@ -57,7 +62,8 @@
             // lblTotalCoins
             // 
             lblTotalCoins.AutoSize = true;
-            lblTotalCoins.Location = new Point(533, 58);
+            lblTotalCoins.BackColor = Color.Green;
+            lblTotalCoins.Location = new Point(533, 47);
             lblTotalCoins.Name = "lblTotalCoins";
             lblTotalCoins.Size = new Size(60, 20);
             lblTotalCoins.TabIndex = 3;
@@ -65,29 +71,45 @@
             // 
             // btnShop
             // 
-            btnShop.Location = new Point(199, 168);
+            btnShop.BackColor = Color.Green;
+            btnShop.Font = new Font("Ink Free", 16.2F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            btnShop.ForeColor = Color.Black;
+            btnShop.Location = new Point(199, 197);
             btnShop.Name = "btnShop";
             btnShop.Size = new Size(252, 97);
             btnShop.TabIndex = 4;
-            btnShop.Text = "فروشگاه";
-            btnShop.UseVisualStyleBackColor = true;
+            btnShop.Text = "Shop";
+            btnShop.UseVisualStyleBackColor = false;
             btnShop.Click += button1_Click;
             // 
             // btnExit
             // 
-            btnExit.Location = new Point(21, 20);
+            btnExit.BackColor = Color.Green;
+            btnExit.Location = new Point(12, 9);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(107, 58);
             btnExit.TabIndex = 5;
-            btnExit.Text = "خروج";
-            btnExit.UseVisualStyleBackColor = true;
+            btnExit.Text = "Quit";
+            btnExit.UseVisualStyleBackColor = false;
             btnExit.Click += btnExit_Click;
+            // 
+            // Title
+            // 
+            Title.BackColor = Color.Green;
+            Title.Font = new Font("Segoe UI Black", 19.8000011F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            Title.Location = new Point(153, 9);
+            Title.Name = "Title";
+            Title.Size = new Size(359, 58);
+            Title.TabIndex = 6;
+            Title.Text = "SpaceShooterGame";
             // 
             // MainMenuForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Black;
             ClientSize = new Size(659, 450);
+            Controls.Add(Title);
             Controls.Add(btnExit);
             Controls.Add(btnShop);
             Controls.Add(lblTotalCoins);
@@ -107,5 +129,6 @@
         private Label lblTotalCoins;
         private Button btnShop;
         private Button btnExit;
+        private Label Title;
     }
 }

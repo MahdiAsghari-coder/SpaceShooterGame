@@ -23,7 +23,6 @@ namespace SpaceShooterGame
 
         public override void Draw(Graphics g)
         {
-            // رسم ظاهر سفینه بر اساس خرید کاربر
             if (SkinType == 1)
                 g.DrawImage(Properties.Resources.ship_eagle, X, Y, Width, Height);
             else if (SkinType == 2)
@@ -34,11 +33,21 @@ namespace SpaceShooterGame
 
         public void MoveLeft()
         {
+            // برای اینکه از صفحه خارج نشه
             if (X > 0) X -= Speed;
         }
         public void MoveRight(int formWidth) 
         { 
             if (X < formWidth - Width) X += Speed;
+        }
+        public void MoveUp()
+        {
+            if (Y > 0) Y -= Speed;
+        }
+
+        public void MoveDown(int formHeight)
+        {
+            if (Y + Height < formHeight) Y += Speed;
         }
     }
 }
