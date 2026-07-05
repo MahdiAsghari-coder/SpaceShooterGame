@@ -127,6 +127,7 @@
             btnOption.TabIndex = 8;
             btnOption.Text = "Option";
             btnOption.UseVisualStyleBackColor = false;
+            btnOption.Click += btnOption_Click;
             // 
             // MainMenuForm
             // 

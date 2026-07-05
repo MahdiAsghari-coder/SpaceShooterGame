@@ -53,5 +53,13 @@ namespace SpaceShooterGame
             about.ShowDialog();
             this.Show();
         }
+
+        private void btnOption_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            OptionsForm options = new OptionsForm();
+            options.ShowDialog();
+            this.Show();
+        }
     }
 }

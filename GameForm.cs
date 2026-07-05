@@ -256,7 +256,10 @@ namespace SpaceShooterGame
 
                     bullets.Add(b);
                 }
-                new SoundPlayer(Properties.Resources.snd_shoot).Play();
+                if (!GameSettings.IsSFXMuted)
+                {
+                    new System.Media.SoundPlayer(Properties.Resources.snd_shoot).Play();
+                }
                 shootCooldown = FIRE_RATE_DELAY;
             }
 
@@ -343,7 +346,10 @@ namespace SpaceShooterGame
 
                         if (hitEnemy.HP <= 0)
                         {
-                            new SoundPlayer(Properties.Resources.snd_boom).Play();
+                            if (!GameSettings.IsSFXMuted)
+                            {
+                                new System.Media.SoundPlayer(Properties.Resources.snd_boom).Play();
+                            }
                             score += hitEnemy.EnemyScore;
                             enemiesDefeatedInWave++;
                             enemiesToRemove.Add(e);
@@ -470,7 +476,10 @@ namespace SpaceShooterGame
 
                 if (cRect.IntersectsWith(playerRect))
                 {
-                    new SoundPlayer(Properties.Resources.snd_coin).Play();
+                    if (!GameSettings.IsSFXMuted)
+                    {
+                        new System.Media.SoundPlayer(Properties.Resources.snd_coin).Play();
+                    }
                     sessionCoins += ((Coin)c).Value;
                     coinsToRemove.Add(c);
                 }
@@ -486,9 +495,11 @@ namespace SpaceShooterGame
 
         private void GameForm_Load(object sender, EventArgs e)
         {
-
-            SoundPlayer bgMusic = new SoundPlayer(Properties.Resources.snd_bg);
-            bgMusic.PlayLooping();
+            if (!GameSettings.IsMusicMuted)
+            {
+                System.Media.SoundPlayer bgMusic = new System.Media.SoundPlayer(Properties.Resources.snd_bg);
+                bgMusic.PlayLooping();
+            }
 
             // خواندن تعداد جان‌های اضافه از دیتابیس و اضافه کردن به سفینه بازیکن
             int extraHP = DatabaseManager.GetExtraHP();
