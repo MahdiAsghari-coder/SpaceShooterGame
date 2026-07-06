@@ -42,7 +42,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(787, 457);
             Name = "GameForm";
             Text = "GameForm";
             Load += GameForm_Load;

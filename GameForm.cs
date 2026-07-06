@@ -68,9 +68,8 @@ namespace SpaceShooterGame
             {
                 eb.Draw(e.Graphics);
             }
-            // نمایش امتیاز در گوشه صفحه
             e.Graphics.DrawString("Score: " + score, new Font("Arial", 16), Brushes.Black, new Point(10, 10));
-            // نمایش شماره موج
+            
             e.Graphics.DrawString("Wave: " + currentWave + " / 10", new Font("Arial", 16), Brushes.Red, new Point(10, 40));
 
             if (isWaveTransition)
@@ -87,7 +86,6 @@ namespace SpaceShooterGame
             e.Graphics.DrawString("Lives: " + player.HP, new Font("Arial", 16, FontStyle.Bold), Brushes.Green, new Point(10, 70));
 
 
-            // نشون دادن تایم باقی مونده از پاور اپ
             if (player.ShieldTimer > 0)
             {
                 int secondsLeft = (player.ShieldTimer / 60) + 1; // تبدیل تیک تایمر به ثانیه
@@ -282,10 +280,8 @@ namespace SpaceShooterGame
                 ((Bullet)bullet).MoveUp();
             }
 
-            // حذف گلوله‌هایی که از صفحه خارج شدند
             bullets.RemoveAll(b => b.Y < 0);
 
-            // چک کردن برخورد
             CheckCollisions();
 
 
@@ -295,21 +291,26 @@ namespace SpaceShooterGame
             {
                 if (currentWave == 10)
                 {
-                    isBossSpawned = true;
-                    enemies.Add(new HeavyTankEnemy(this.ClientSize.Width / 2 - 40, -80));
+                    if (enemiesDefeatedInWave >= 9 && !isBossSpawned)
+                    {
+                        isBossSpawned = true;
+                        enemies.Add(new HeavyTankEnemy(this.ClientSize.Width / 2 - 40, -80));
+                    }
                 }
                 else
                 {
                     isWaveTransition = true;
                 }
             }
+            bool canSpawnRegularEnemies = (currentWave < 10 && !isWaveTransition) || (currentWave == 10 && !isBossSpawned);
 
-            if (currentWave < 10 && rnd.Next(0, 50) == 1)
+            if (canSpawnRegularEnemies && rnd.Next(0, 50) == 1)
             {
                 int randomX = rnd.Next(0, this.ClientSize.Width - 40);
                 Enemy newEnemy;
 
-                if (currentWave >= 3 && rnd.Next(0, 3) == 0) newEnemy = new ShooterEnemy(randomX, -50);
+                if (currentWave >= 4 && rnd.Next(0, 4) == 0) newEnemy = new TerroristEnemy(randomX, -50);
+                else if (currentWave >= 3 && rnd.Next(0, 3) == 0) newEnemy = new ShooterEnemy(randomX, -50);
                 else if (currentWave >= 2 && rnd.Next(0, 2) == 0) newEnemy = new ScoutEnemy(randomX, -50);
                 else newEnemy = new StandardEnemy(randomX, -50);
 
@@ -341,7 +342,7 @@ namespace SpaceShooterGame
                     if (bulletRect.IntersectsWith(enemyRect))
                     {
                         Enemy hitEnemy = (Enemy)e;
-                        hitEnemy.HP -= 1;
+                        hitEnemy.HP -= 10;
                         bulletsToRemove.Add(b);
 
                         if (hitEnemy.HP <= 0)
