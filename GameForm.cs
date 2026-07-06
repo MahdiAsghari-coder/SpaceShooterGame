@@ -349,7 +349,7 @@ namespace SpaceShooterGame
                     if (bulletRect.IntersectsWith(enemyRect))
                     {
                         Enemy hitEnemy = (Enemy)e;
-                        hitEnemy.HP -= 100;
+                        hitEnemy.HP -= 1;
                         bulletsToRemove.Add(b);
 
                         if (hitEnemy.HP <= 0)
