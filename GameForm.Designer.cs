@@ -30,6 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             timer1 = new System.Windows.Forms.Timer(components);
+            lblWinMessage = new Label();
             SuspendLayout();
             // 
             // timer1
@@ -38,19 +39,34 @@
             timer1.Interval = 20;
             timer1.Tick += timer1_Tick;
             // 
+            // lblWinMessage
+            // 
+            lblWinMessage.AutoSize = true;
+            lblWinMessage.Font = new Font("Segoe Print", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblWinMessage.ForeColor = Color.Green;
+            lblWinMessage.Location = new Point(101, 62);
+            lblWinMessage.Name = "lblWinMessage";
+            lblWinMessage.Size = new Size(540, 35);
+            lblWinMessage.TabIndex = 0;
+            lblWinMessage.Text = "تبریک! شما غول مرحله آخر را نابود کردید و برنده شدید!";
+            lblWinMessage.Visible = false;
+            // 
             // GameForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(787, 457);
+            Controls.Add(lblWinMessage);
             Name = "GameForm";
             Text = "GameForm";
             Load += GameForm_Load;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private System.Windows.Forms.Timer timer1;
+        private Label lblWinMessage;
     }
 }

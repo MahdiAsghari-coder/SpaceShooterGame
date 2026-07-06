@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Media;
+using System.IO;
+using WMPLib;
 
 namespace SpaceShooterGame
 {
@@ -42,6 +44,11 @@ namespace SpaceShooterGame
         
         List<GameObject> coinsList = new List<GameObject>();
         private int sessionCoins = 0;
+
+        WindowsMediaPlayer bgMusicPlayer = new WindowsMediaPlayer();
+        System.Media.SoundPlayer shootSoundPlayer = new System.Media.SoundPlayer(Properties.Resources.snd_shoot);
+        System.Media.SoundPlayer coinSoundPlayer = new System.Media.SoundPlayer(Properties.Resources.snd_coin);
+        System.Media.SoundPlayer boomSoundPlayer = new System.Media.SoundPlayer(Properties.Resources.snd_boom);
 
         Player player = new Player(200, 400);
         public GameForm()
@@ -342,7 +349,7 @@ namespace SpaceShooterGame
                     if (bulletRect.IntersectsWith(enemyRect))
                     {
                         Enemy hitEnemy = (Enemy)e;
-                        hitEnemy.HP -= 10;
+                        hitEnemy.HP -= 100;
                         bulletsToRemove.Add(b);
 
                         if (hitEnemy.HP <= 0)
@@ -385,9 +392,11 @@ namespace SpaceShooterGame
                             {
                                 // ذخیره در دیتابیس
                                 DatabaseManager.SaveGameResult(score, sessionCoins);
-                                timer1.Stop();
-                                MessageBox.Show("تبریک! شما غول را کشتید و بازی تمام شد!", "پایان بازی");
-                                this.Close();
+                                timer1.Stop(); 
+                                lblWinMessage.Text = "تبریک! شما غول را کشتید و برنده شدید!";
+                                lblWinMessage.Visible = true;
+                                lblWinMessage.BringToFront();
+                                
                             }
                         }
                     }
@@ -496,10 +505,26 @@ namespace SpaceShooterGame
 
         private void GameForm_Load(object sender, EventArgs e)
         {
+
+            //کمک از هوش مصنوعی برای مشکل قطع شدن صدای پشت زمینه پس از تیر زدن
+            string bgPath = Path.Combine(Path.GetTempPath(), "snd_bg.wav");
+
+            if (!File.Exists(bgPath))
+            {
+                using (Stream stream = Properties.Resources.snd_bg)
+                using (FileStream fileStream = new FileStream(bgPath, FileMode.Create))
+                {
+                    stream.CopyTo(fileStream);
+                }
+            }
+
+            bgMusicPlayer.URL = bgPath;
+            bgMusicPlayer.settings.setMode("loop", true);
+            bgMusicPlayer.controls.stop();
+
             if (!GameSettings.IsMusicMuted)
             {
-                System.Media.SoundPlayer bgMusic = new System.Media.SoundPlayer(Properties.Resources.snd_bg);
-                bgMusic.PlayLooping();
+                bgMusicPlayer.controls.play();
             }
 
             // خواندن تعداد جان‌های اضافه از دیتابیس و اضافه کردن به سفینه بازیکن
@@ -525,6 +550,15 @@ namespace SpaceShooterGame
             {
                 this.BackgroundImage = null;
                 this.BackColor = Color.White;
+            }
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (bgMusicPlayer != null)
+            {
+                bgMusicPlayer.controls.stop();
             }
         }
     }
